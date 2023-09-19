@@ -1,4 +1,6 @@
+log/
 vendor/
 .env
 bin/
 .DS_Store
+.env.yaml

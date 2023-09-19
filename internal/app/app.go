@@ -2,7 +2,8 @@ package app
 
 import (
 	"context"
-	"github.com/joho/godotenv"
+	"fmt"
+	"github.com/sukha-id/bee/internal/app/config"
 	"github.com/sukha-id/bee/pkg/logx"
 	"net/http"
 	"os"
@@ -14,13 +15,12 @@ import (
 )
 
 func Run() {
-	logx.InitLogger("info", "")
-	err := godotenv.Load()
+	cfg, err := config.LoadConfig()
 	if err != nil {
-		logx.GetLogger().Fatal("Error loading .env file")
+		logx.GetLogger().Fatal("Error loading config file")
 	}
-
-	db := initSqlConnection()
+	fmt.Println(cfg.App.Debug)
+	db := initSqlConnection(&cfg)
 
 	// init router
 	r := initRouter(db)

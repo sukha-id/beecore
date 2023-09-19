@@ -1,0 +1,9 @@
+app:
+  debug: true
+  port: 1000
+database:
+  hostname: localhost
+  port: 3306
+  username: root
+  password: root
+  database_name: jns
