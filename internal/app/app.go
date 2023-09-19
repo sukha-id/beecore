@@ -31,7 +31,7 @@ func Run() {
 
 	// Create a server with desired configurations
 	server := &http.Server{
-		Addr:    "0.0.0.0:" + os.Getenv("APP_PORT"),
+		Addr:    "0.0.0.0:" + cfg.App.Port,
 		Handler: r,
 	}
 
