@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
@@ -30,14 +31,32 @@ func TestTodo_FindOne(t *testing.T) {
 			beforeTest: func(mockSQL sqlmock.Sqlmock) {
 				mockSQL.
 					ExpectQuery(
-						`SELECT 
-    									id
+						`SELECT
+										id
 									FROM todo`).
 					WithArgs(sqlmock.AnyArg()).
-					WillReturnError(nil).
+					WillReturnError(sql.ErrNoRows).
 					WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow("1"))
 			},
 			expectedError: nil,
+		},
+		{
+			name: "test no row",
+			args: args{
+				ctx:   context.TODO(),
+				input: "yyy",
+			},
+			beforeTest: func(mockSQL sqlmock.Sqlmock) {
+				mockSQL.
+					ExpectQuery(
+						`SELECT 
+    									id
+									FROM todo`).
+					WithArgs("yyy").
+					WillReturnError(sql.ErrNoRows).
+					WillReturnRows(sqlmock.NewRows([]string{"id"}))
+			},
+			expectedError: sql.ErrNoRows,
 		},
 	}
 
@@ -55,7 +74,6 @@ func TestTodo_FindOne(t *testing.T) {
 			}
 
 			result, err := ss.FindOne(test.args.ctx, test.args.input)
-			fmt.Println(result, err)
 			if !errors.Is(err, test.expectedError) {
 				fmt.Println(err)
 				t.Errorf("expected: %v but got: %v \n", test.expectedError, err)

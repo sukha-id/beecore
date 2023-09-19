@@ -15,7 +15,7 @@ func (t todo) FindOne(ctx context.Context, code string) (todo *domainTodo.Todo, 
 			FROM todo 
 			WHERE id=?`
 
-	err = t.db.SelectContext(ctx, &result, query, code)
+	err = t.db.GetContext(ctx, &result, query, code)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil

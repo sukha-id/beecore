@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"github.com/bxcodec/faker"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -16,12 +15,15 @@ import (
 )
 
 func TestCreateTodo(t *testing.T) {
-	var mockParam domain.Todo
-	err := faker.FakeData(&mockParam)
-	assert.NoError(t, err)
+	//var mockParam domain.Todo
+	//err := faker.FakeData(&mockParam)
+	//assert.NoError(t, err)
+	mockParam := domain.Todo{
+		Task: "OKE",
+	}
 
 	mockUseCase := new(mocks.TodoUseCase)
-	mockUseCase.On("StoreOne", mock.Anything, mock.Anything).Return(mockParam, err)
+	mockUseCase.On("StoreOne", mock.Anything, mock.Anything).Return(mockParam, nil)
 
 	handlerTodo := NewHandlerTodo(mockUseCase)
 	r := gin.Default()
