@@ -1,9 +1,9 @@
-package log
+package logrusx
 
 type Config struct {
-	Dir       string `yaml:"dir"`
-	FileName  string `yaml:"file_name"`
-	MaxSize   int    `yaml:"max_size"`
-	LocalTime bool   `yaml:"local_time"`
-	Compress  bool   `yaml:"compress"`
+	Dir       string `mapstructure:"dir"`
+	FileName  string `mapstructure:"file_name"`
+	MaxSize   int    `mapstructure:"max_size"`
+	LocalTime bool   `mapstructure:"local_time"`
+	Compress  bool   `mapstructure:"compress"`
 }

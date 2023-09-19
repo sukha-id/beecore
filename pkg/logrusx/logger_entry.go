@@ -1,4 +1,4 @@
-package log
+package logrusx
 
 import (
 	"fmt"
