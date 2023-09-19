@@ -2,11 +2,13 @@ package config
 
 import (
 	"github.com/spf13/viper"
+	"github.com/sukha-id/bee/pkg/logrusx"
 )
 
 type ConfigApp struct {
 	App      App
 	Database Database
+	Log      logrusx.Config
 }
 
 type App struct {

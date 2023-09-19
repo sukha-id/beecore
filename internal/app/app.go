@@ -2,8 +2,8 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"github.com/sukha-id/bee/internal/app/config"
+	"github.com/sukha-id/bee/pkg/logrusx"
 	"github.com/sukha-id/bee/pkg/logx"
 	"net/http"
 	"os"
@@ -15,11 +15,15 @@ import (
 )
 
 func Run() {
+
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		logx.GetLogger().Fatal("Error loading config file")
+		panic("Error loading config file")
 	}
-	fmt.Println(cfg.App.Debug)
+
+	ctxLog := context.Background()
+	_ = logrusx.NewProvider(&ctxLog, cfg.Log)
+
 	db := initSqlConnection(&cfg)
 
 	// init router
