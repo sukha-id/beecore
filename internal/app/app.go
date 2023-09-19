@@ -22,12 +22,12 @@ func Run() {
 	}
 
 	ctxLog := context.Background()
-	_ = logrusx.NewProvider(&ctxLog, cfg.Log)
+	logger := logrusx.NewProvider(&ctxLog, cfg.Log)
 
 	db := initSqlConnection(&cfg)
 
 	// init router
-	r := initRouter(db)
+	r := initRouter(db, logger.GetLogger("bee-core"))
 
 	// Create a server with desired configurations
 	server := &http.Server{
@@ -39,7 +39,7 @@ func Run() {
 	go func() {
 		logx.GetLogger().Info("Server running at: ", os.Getenv("APP_PORT"))
 		if err := server.ListenAndServe(); err != nil {
-			logx.GetLogger().Fatalf("Server error: %v", err)
+			logger.GetLogger("bee-core").Fatal("", "Server error: %v", err)
 		}
 	}()
 
@@ -56,8 +56,8 @@ func Run() {
 
 	// Attempt to gracefully shut down the server
 	if err := server.Shutdown(ctx); err != nil {
-		logx.GetLogger().Fatalf("Error during server shutdown: %v", err)
+		logger.GetLogger("bee-core").Fatal("", "Error during server shutdown: %v", err)
 	}
 
-	logx.GetLogger().Info("Server gracefully shut down")
+	logger.GetLogger("bee-core").Info("", "Server gracefully shut down")
 }

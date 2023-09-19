@@ -7,14 +7,15 @@ import (
 	"github.com/sukha-id/bee/internal/app/middleware"
 	"github.com/sukha-id/bee/internal/app/repositories"
 	usecase "github.com/sukha-id/bee/internal/app/usecase/todo"
+	"github.com/sukha-id/bee/pkg/logrusx"
 	"net/http"
 	"time"
 )
 
-func initRouter(db *sqlx.DB) http.Handler {
+func initRouter(db *sqlx.DB, logger *logrusx.LoggerEntry) http.Handler {
 	repoTodo := repositories.NewRepositoryTodo(db)
 	useCaseTodo := usecase.NewTodoUseCase(repoTodo)
-	handlerTodo := handler.NewHandlerTodo(useCaseTodo)
+	handlerTodo := handler.NewHandlerTodo(useCaseTodo, logger)
 	r := gin.Default()
 	r.Use(middleware.TimeoutMiddleware(5 * time.Second))
 	v1 := r.Group("/v1")
