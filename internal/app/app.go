@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"github.com/sukha-id/bee/internal/app/config"
+	"github.com/sukha-id/bee/internal/app/router"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"github.com/sukha-id/bee/pkg/logx"
 	"net/http"
@@ -27,7 +28,7 @@ func Run() {
 	db := initSqlConnection(&cfg)
 
 	// init router
-	r := initRouter(db, logger.GetLogger("bee-core"))
+	r := router.SampleRouter(db, logger.GetLogger("bee-core"))
 
 	// Create a server with desired configurations
 	server := &http.Server{

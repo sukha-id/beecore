@@ -1,19 +1,18 @@
-package app
+package router
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	handler "github.com/sukha-id/bee/internal/app/handler/todo"
 	"github.com/sukha-id/bee/internal/app/middleware"
-	"github.com/sukha-id/bee/internal/app/repositories"
 	usecase "github.com/sukha-id/bee/internal/app/usecase/todo"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"net/http"
 	"time"
 )
 
-func initRouter(db *sqlx.DB, logger *logrusx.LoggerEntry) http.Handler {
-	repoTodo := repositories.NewRepositoryTodo(db)
+func SampleRouter(db *sqlx.DB, logger *logrusx.LoggerEntry) http.Handler {
+	repoTodo := todo.NewRepositoryTodo(db)
 	useCaseTodo := usecase.NewTodoUseCase(repoTodo)
 	handlerTodo := handler.NewHandlerTodo(useCaseTodo, logger)
 	r := gin.Default()
