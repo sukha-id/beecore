@@ -75,7 +75,6 @@ func TestTodo_FindOne(t *testing.T) {
 
 			result, err := ss.FindOne(test.args.ctx, test.args.input)
 			if !errors.Is(err, test.expectedError) {
-				fmt.Println(err)
 				t.Errorf("expected: %v but got: %v \n", test.expectedError, err)
 			}
 			fmt.Println("result", result)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/sukha-id/bee/internal/app/config"
+	"github.com/sukha-id/bee/internal/app/connector"
 	handler "github.com/sukha-id/bee/internal/app/handler/todo"
 	"github.com/sukha-id/bee/internal/app/middleware"
 	repositories "github.com/sukha-id/bee/internal/app/repositories/todo"
@@ -29,7 +30,7 @@ func Run() {
 	ctxLog := context.Background()
 	logger := logrusx.NewProvider(&ctxLog, cfg.Log)
 
-	db := initSqlConnection(&cfg)
+	db := connector.InitSqlConnection(&cfg)
 
 	router := gin.Default()
 	router.Use(middleware.TimeoutMiddleware(5 * time.Second))

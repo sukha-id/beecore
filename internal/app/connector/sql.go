@@ -1,4 +1,4 @@
-package app
+package connector
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func initSqlConnection(cfg *config.ConfigApp) *sqlx.DB {
+func InitSqlConnection(cfg *config.ConfigApp) *sqlx.DB {
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		cfg.Database.Username,
 		cfg.Database.Password,

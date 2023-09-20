@@ -7,7 +7,6 @@ import (
 
 func ExtractError(err error) (result []string) {
 	if _, ok := err.(*validator.InvalidValidationError); ok {
-		fmt.Println("InvalidValidationError:", err)
 		return
 	}
 
