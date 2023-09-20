@@ -10,6 +10,7 @@ func RespondWithError(ctx *gin.Context, status int, message string, error interf
 		"message": message,
 		"error":   error,
 	})
+	ctx.Abort()
 }
 
 func RespondWithJSON(ctx *gin.Context, status int, message string, data interface{}) {
@@ -18,4 +19,5 @@ func RespondWithJSON(ctx *gin.Context, status int, message string, data interfac
 		"message": message,
 		"data":    data,
 	})
+	ctx.Abort()
 }
