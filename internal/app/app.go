@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/sukha-id/bee/internal/app/config"
+	"github.com/sukha-id/bee/internal/app/configuration"
 	"github.com/sukha-id/bee/internal/app/connector"
 	handler "github.com/sukha-id/bee/internal/app/handler/todo"
 	"github.com/sukha-id/bee/internal/app/middleware"
@@ -22,7 +22,7 @@ import (
 
 func Run() {
 
-	cfg, err := config.LoadConfig()
+	cfg, err := configuration.LoadConfig()
 	if err != nil {
 		panic("Error loading config file")
 	}

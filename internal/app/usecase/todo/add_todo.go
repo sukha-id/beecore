@@ -6,6 +6,7 @@ import (
 )
 
 type todoUseCase struct {
+	repoTodo domain.TodoRepository
 }
 
 func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Todo) (result domain.Todo, err error) {
@@ -23,5 +24,7 @@ func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Todo) (result do
 }
 
 func NewTodoUseCase(repoTodo domain.TodoRepository) domain.TodoUseCase {
-	return &todoUseCase{}
+	return &todoUseCase{
+		repoTodo: repoTodo,
+	}
 }

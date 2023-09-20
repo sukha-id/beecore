@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/sukha-id/bee/pkg/logrusx/dailylogger"
 	"io"
-	"io/ioutil"
 	"path"
 
 	"github.com/sirupsen/logrus"
@@ -18,7 +17,7 @@ type Provider struct {
 
 func NewProvider(ctx *context.Context, cfg Config) *Provider {
 	logger := logrus.New()
-	logger.SetOutput(ioutil.Discard)
+	logger.SetOutput(io.Discard)
 
 	logger.SetReportCaller(true)
 	logger.SetFormatter(&LoggerFormatter{})
