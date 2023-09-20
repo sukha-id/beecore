@@ -36,6 +36,6 @@ func TestAddTodo(t *testing.T) {
 		result, err := u.StoreOne(context.TODO(), domain.Todo{Task: ""})
 		fmt.Println(result, err)
 
-		assert.EqualError(t, err, domain.ERROR_TODO_INVALID_TASK.Error())
+		assert.EqualError(t, err, domain.ErrorTodoInvalidTask.Error())
 	})
 }

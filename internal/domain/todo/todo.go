@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ERROR_TODO_HAS_EXIST    = errors.New("todo has exist")
-	ERROR_TODO_INVALID_TASK = errors.New("invalid task name")
+	ErrorTodoHasExist    = errors.New("todo has exist")
+	ErrorTodoInvalidTask = errors.New("invalid task name")
 )
 
 type TodoUseCase interface {

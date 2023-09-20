@@ -11,11 +11,11 @@ type todoUseCase struct {
 func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Todo) (result domain.Todo, err error) {
 
 	if todo.Task == "" {
-		err = domain.ERROR_TODO_INVALID_TASK
+		err = domain.ErrorTodoInvalidTask
 		return
 	}
 	if false {
-		err = domain.ERROR_TODO_HAS_EXIST
+		err = domain.ErrorTodoHasExist
 		return
 	}
 
