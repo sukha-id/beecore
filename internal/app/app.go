@@ -2,8 +2,12 @@ package app
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/sukha-id/bee/internal/app/config"
-	"github.com/sukha-id/bee/internal/app/router"
+	handler "github.com/sukha-id/bee/internal/app/handler/todo"
+	"github.com/sukha-id/bee/internal/app/middleware"
+	repositories "github.com/sukha-id/bee/internal/app/repositories/todo"
+	usecase "github.com/sukha-id/bee/internal/app/usecase/todo"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"github.com/sukha-id/bee/pkg/logx"
 	"net/http"
@@ -27,13 +31,18 @@ func Run() {
 
 	db := initSqlConnection(&cfg)
 
-	// init router
-	r := router.SampleRouter(db, logger.GetLogger("bee-core"))
+	router := gin.Default()
+	router.Use(middleware.TimeoutMiddleware(5 * time.Second))
+
+	// sample todo
+	repoTodo := repositories.NewRepositoryTodo(db)
+	useCaseTodo := usecase.NewTodoUseCase(repoTodo)
+	handler.NewHandlerTodo(router, useCaseTodo, logger.GetLogger("bee-core"))
 
 	// Create a server with desired configurations
 	server := &http.Server{
 		Addr:    "0.0.0.0:" + cfg.App.Port,
-		Handler: r,
+		Handler: router,
 	}
 
 	// Start the server in a separate goroutine

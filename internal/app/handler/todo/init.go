@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"github.com/gin-gonic/gin"
 	domain "github.com/sukha-id/bee/internal/domain/todo"
 	"github.com/sukha-id/bee/pkg/logrusx"
+	"net/http"
+	"time"
 )
 
 type Handler struct {
@@ -10,9 +13,19 @@ type Handler struct {
 	logger      *logrusx.LoggerEntry
 }
 
-func NewHandlerTodo(todoUseCase domain.TodoUseCase, logger *logrusx.LoggerEntry) Handler {
-	return Handler{
+func NewHandlerTodo(router *gin.Engine, todoUseCase domain.TodoUseCase, logger *logrusx.LoggerEntry) {
+	handler := &Handler{
 		todoUseCase: todoUseCase,
 		logger:      logger,
+	}
+	v1 := router.Group("/v1")
+	{
+		v1.GET("ping", func(context *gin.Context) {
+			time.Sleep(6 * time.Second)
+			context.JSON(http.StatusOK, gin.H{
+				"message": "pong",
+			})
+		})
+		v1.GET("create", handler.HandlerCreateTodo)
 	}
 }
