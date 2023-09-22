@@ -1,6 +1,7 @@
 app:
   debug: true
   port: 8080
+  timeout: 5
 database:
   hostname: localhost
   port: 3306
