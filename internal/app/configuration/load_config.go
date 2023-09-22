@@ -18,11 +18,14 @@ type App struct {
 }
 
 type Database struct {
-	HostName     string `mapstructure:"host"`
-	Port         string `mapstructure:"port"`
-	Username     string `mapstructure:"username"`
-	Password     string `mapstructure:"password"`
-	DatabaseName string `mapstructure:"database_name"`
+	HostName              string `mapstructure:"host"`
+	Port                  string `mapstructure:"port"`
+	Username              string `mapstructure:"username"`
+	Password              string `mapstructure:"password"`
+	DatabaseName          string `mapstructure:"database_name"`
+	MaxIdleConnection     int    `mapstructure:"max_idle_connection"`
+	MaxOpenConnection     int    `mapstructure:"max_open_connection"`
+	MaxLifetimeConnection int    `mapstructure:"max_lifetime_connection"`
 }
 
 func LoadConfig() (config ConfigApp, err error) {

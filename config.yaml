@@ -8,3 +8,6 @@ database:
   username: root
   password: root
   database_name: jns
+  max_idle_connection: 10
+  max_open_connection: 100
+  max_lifetime_connection: 600

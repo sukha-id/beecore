@@ -21,9 +21,9 @@ func InitSqlConnection(cfg *configuration.ConfigApp) *sqlx.DB {
 		logx.GetLogger().Fatal(err)
 	}
 
-	db.SetMaxIdleConns(10)
-	db.SetMaxOpenConns(100)
-	db.SetConnMaxLifetime(1600 * time.Second)
+	db.SetMaxIdleConns(cfg.Database.MaxIdleConnection)
+	db.SetMaxOpenConns(cfg.Database.MaxOpenConnection)
+	db.SetConnMaxLifetime(time.Duration(cfg.Database.MaxLifetimeConnection) * time.Second)
 
 	return db
 }
