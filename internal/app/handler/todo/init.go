@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	domain "github.com/sukha-id/bee/internal/domain/todo"
+	"github.com/sukha-id/bee/pkg/ginx"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"net/http"
 )
@@ -19,10 +20,8 @@ func NewHandlerTodo(router *gin.Engine, todoUseCase domain.TodoUseCase, logger *
 	}
 	v1 := router.Group("/v1")
 	{
-		v1.GET("ping", func(context *gin.Context) {
-			context.JSON(http.StatusOK, gin.H{
-				"message": "pong",
-			})
+		v1.GET("ping", func(ctx *gin.Context) {
+			ginx.RespondWithJSON(ctx, http.StatusOK, "pong", nil)
 		})
 		v1.GET("create", handler.HandlerCreateTodo)
 	}

@@ -33,7 +33,7 @@ func Run() {
 	db := connector.InitSqlConnection(&cfg)
 
 	router := gin.Default()
-	router.Use(middleware.TimeoutMiddleware(5 * time.Second))
+	router.Use(middleware.TimeoutMiddleware(time.Duration(cfg.App.Timeout) * time.Second))
 
 	// sample todo
 	repoTodo := repositories.NewRepositoryTodo(db)
@@ -48,7 +48,7 @@ func Run() {
 
 	// Start the server in a separate goroutine
 	go func() {
-		logx.GetLogger().Info("Server running at: ", os.Getenv("APP_PORT"))
+		logx.GetLogger().Info("Server running at: ", cfg.App.Port)
 		if err := server.ListenAndServe(); err != nil {
 			logger.GetLogger("bee-core").Fatal("", "Server error: %v", err)
 		}
