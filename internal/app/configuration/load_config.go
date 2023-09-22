@@ -12,8 +12,9 @@ type ConfigApp struct {
 }
 
 type App struct {
-	Debug bool   `mapstructure:"debug"`
-	Port  string `mapstructure:"port"`
+	Debug   bool   `mapstructure:"debug"`
+	Port    string `mapstructure:"port"`
+	Timeout int    `mapstructure:"timeout"`
 }
 
 type Database struct {
