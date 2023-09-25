@@ -50,7 +50,7 @@ func Run() {
 	go func() {
 		logx.GetLogger().Info("Server running at: ", cfg.App.Port)
 		if err := server.ListenAndServe(); err != nil {
-			logger.GetLogger("bee-core").Fatal("", "Server error: %v", err)
+			logger.GetLogger("bee-core").Fatal("", "Server error", err)
 		}
 	}()
 
