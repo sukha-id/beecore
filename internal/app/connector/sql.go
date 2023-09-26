@@ -19,6 +19,13 @@ func InitSqlConnection(cfg *configuration.ConfigApp) *sqlx.DB {
 	db, err := sqlx.Open("mysql", connectionString)
 	if err != nil {
 		logx.GetLogger().Fatal(err)
+		panic(err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		logx.GetLogger().Fatal(err)
+		panic(err)
 	}
 
 	db.SetMaxIdleConns(cfg.Database.MaxIdleConnection)
