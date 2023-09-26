@@ -19,6 +19,7 @@ func RespondWithError(ctx *gin.Context, status int, message string, error interf
 		Status:    status,
 		Error:     error,
 	})
+	ctx.Header("Content-Type", "application/json")
 	ctx.Abort()
 	return
 }
@@ -30,6 +31,7 @@ func RespondWithJSON(ctx *gin.Context, status int, message string, data interfac
 		Status:    status,
 		Data:      data,
 	})
+	ctx.Header("Content-Type", "application/json")
 	ctx.Abort()
 	return
 }
