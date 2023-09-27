@@ -33,11 +33,11 @@ func LoadConfig() (config ConfigApp, err error) {
 	viper.SetConfigFile("config.yaml")
 
 	if err = viper.ReadInConfig(); err != nil {
-		return
+		panic(err)
 	}
 
 	if err = viper.Unmarshal(&config); err != nil {
-		return
+		panic(err)
 	}
 
 	return
