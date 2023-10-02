@@ -4,8 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/stretchr/testify/require"
+	"github.com/sukha-id/bee/internal/app/configuration"
 	domainTodo "github.com/sukha-id/bee/internal/domain/todo"
+	"github.com/sukha-id/bee/pkg/logrusx"
 	"testing"
 )
 
@@ -14,6 +18,12 @@ func TestTodo_StoreOne(t *testing.T) {
 		ctx   context.Context
 		input domainTodo.Todo
 	}
+
+	cfg, err := configuration.LoadConfig("../../../../config.yaml")
+	require.NoError(t, err)
+	ctx := context.Background()
+	ctxWithValue := context.WithValue(ctx, "request_id", uuid.New().String())
+	logger := logrusx.NewProvider(&ctx, cfg.Log)
 
 	testCase := []struct {
 		name          string
@@ -24,7 +34,7 @@ func TestTodo_StoreOne(t *testing.T) {
 		{
 			name: "test",
 			args: args{
-				ctx: context.TODO(),
+				ctx: ctxWithValue,
 				input: domainTodo.Todo{
 					Task: "task",
 				},
@@ -46,7 +56,7 @@ func TestTodo_StoreOne(t *testing.T) {
 
 			db := sqlx.NewDb(mockDB, "sqlmock")
 
-			ss := NewRepositoryTodo(db)
+			ss := NewRepositoryTodo(db, logger.GetLogger("bee-core-todo-repository"))
 
 			if test.beforeTest != nil {
 				test.beforeTest(mockSQL)

@@ -5,7 +5,7 @@ import (
 	domain "github.com/sukha-id/bee/internal/domain/todo"
 )
 
-func (t todo) UpdateOne(ctx context.Context, todo domain.Todo, uuid string) (err error) {
+func (t *todo) UpdateOne(ctx context.Context, todo domain.Todo, uuid string) (err error) {
 	//TODO implement me
 	panic("implement me")
 }

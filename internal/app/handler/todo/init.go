@@ -6,6 +6,7 @@ import (
 	"github.com/sukha-id/bee/pkg/ginx"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"net/http"
+	"time"
 )
 
 type Handler struct {
@@ -13,14 +14,15 @@ type Handler struct {
 	logger      *logrusx.LoggerEntry
 }
 
-func NewHandlerTodo(router *gin.Engine, todoUseCase domain.TodoUseCase, logger *logrusx.LoggerEntry) {
+func NewHandlerTodo(router *gin.Engine, logger *logrusx.LoggerEntry, todoUseCase domain.TodoUseCase) {
 	handler := &Handler{
 		todoUseCase: todoUseCase,
 		logger:      logger,
 	}
-	v1 := router.Group("/v1")
+	v1 := router.Group("/api/v1")
 	{
 		v1.GET("ping", func(ctx *gin.Context) {
+			time.Sleep(6 * time.Second)
 			ginx.RespondWithJSON(ctx, http.StatusOK, "pong", nil)
 		})
 		v1.GET("create", handler.HandlerCreateTodo)

@@ -21,8 +21,7 @@ import (
 )
 
 func Run() {
-
-	cfg, err := configuration.LoadConfig()
+	cfg, err := configuration.LoadConfig("config.yaml")
 	if err != nil {
 		panic("Error loading config file")
 	}
@@ -30,15 +29,17 @@ func Run() {
 	ctxLog := context.Background()
 	logger := logrusx.NewProvider(&ctxLog, cfg.Log)
 
-	db := connector.InitSqlConnection(&cfg)
+	db, err := connector.InitSqlConnection(&cfg)
+	if err != nil {
+		panic(err)
+	}
 
 	router := gin.Default()
 	router.Use(middleware.TimeoutMiddleware(time.Duration(cfg.App.Timeout) * time.Second))
 
-	// sample todo
-	repoTodo := repositories.NewRepositoryTodo(db)
-	useCaseTodo := usecase.NewTodoUseCase(repoTodo)
-	handler.NewHandlerTodo(router, useCaseTodo, logger.GetLogger("bee-core"))
+	repoTodo := repositories.NewRepositoryTodo(db, logger.GetLogger("bee-core"))
+	useCaseTodo := usecase.NewTodoUseCase(logger.GetLogger("bee-core"), repoTodo)
+	handler.NewHandlerTodo(router, logger.GetLogger("bee-core"), useCaseTodo)
 
 	// Create a server with desired configurations
 	server := &http.Server{

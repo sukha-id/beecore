@@ -7,12 +7,16 @@ import (
 	"time"
 )
 
-func (t todo) StoreOne(ctx context.Context, todo domain.Todo) (id string, err error) {
+func (t *todo) StoreOne(ctx context.Context, todo domain.Todo) (id string, err error) {
+	var (
+		guid = ctx.Value("request_id").(string)
+	)
 	id = uuid.New().String()
 	query := `INSERT INTO todo (id, task) VALUES (?,?,?)`
 	_, err = t.db.ExecContext(ctx, query, id, todo.Task, time.Now())
 
 	if err != nil {
+		t.logger.Error(guid, "error repository store one", err)
 		return
 	}
 	return

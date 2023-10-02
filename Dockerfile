@@ -1,25 +1,19 @@
 FROM golang:1.19-alpine AS builder
 
-WORKDIR /go/src/dev
-
-RUN apk add tzdata
+WORKDIR /app
 
 COPY ./ .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o ../app/app main.go
-
-RUN rm -rf /go/src/dev
-
+RUN CGO_ENABLED=0 GOOS=linux go build -o app
 
 FROM alpine:latest AS runtime
 
-WORKDIR /go/src/app
+RUN apk add tzdata
 
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+WORKDIR /app
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
-COPY --from=builder /go/src/app/app ./app
+COPY --from=builder /app/app .
+COPY config.yaml .
 
 EXPOSE 8080
 

@@ -17,9 +17,6 @@ import (
 )
 
 func TestCreateTodo(t *testing.T) {
-	//var mockParam domain.Todo
-	//err := faker.FakeData(&mockParam)
-	//assert.NoError(t, err)
 	mockParam := domain.Todo{
 		Task: "OKE",
 	}
@@ -36,11 +33,12 @@ func TestCreateTodo(t *testing.T) {
 		Compress:  false,
 	})
 
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.Use(middleware.TimeoutMiddleware(5 * time.Second))
-	NewHandlerTodo(router, mockUseCase, logger.GetLogger("bee-core"))
+	NewHandlerTodo(router, logger.GetLogger("bee-core"), mockUseCase)
 
-	req, err := http.NewRequest(http.MethodGet, "/v1/create", nil)
+	req, err := http.NewRequest(http.MethodGet, "/api/v1/create", nil)
 	require.NoError(t, err)
 
 	rec := httptest.NewRecorder()
@@ -50,6 +48,7 @@ func TestCreateTodo(t *testing.T) {
 }
 
 func TestCreatePing(t *testing.T) {
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(middleware.TimeoutMiddleware(5 * time.Second))
 	v1 := r.Group("/v1")

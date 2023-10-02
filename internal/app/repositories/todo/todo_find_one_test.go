@@ -4,9 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/stretchr/testify/require"
+	"github.com/sukha-id/bee/internal/app/configuration"
+	"github.com/sukha-id/bee/pkg/logrusx"
 	"testing"
 )
 
@@ -15,6 +18,12 @@ func TestTodo_FindOne(t *testing.T) {
 		ctx   context.Context
 		input string
 	}
+
+	cfg, err := configuration.LoadConfig("../../../../config.yaml")
+	require.NoError(t, err)
+	ctx := context.Background()
+	ctxWithValue := context.WithValue(ctx, "request_id", uuid.New().String())
+	logger := logrusx.NewProvider(&ctxWithValue, cfg.Log)
 
 	testCase := []struct {
 		name          string
@@ -25,7 +34,7 @@ func TestTodo_FindOne(t *testing.T) {
 		{
 			name: "test",
 			args: args{
-				ctx:   context.TODO(),
+				ctx:   ctxWithValue,
 				input: "xxx",
 			},
 			beforeTest: func(mockSQL sqlmock.Sqlmock) {
@@ -43,7 +52,7 @@ func TestTodo_FindOne(t *testing.T) {
 		{
 			name: "test no row",
 			args: args{
-				ctx:   context.TODO(),
+				ctx:   ctxWithValue,
 				input: "yyy",
 			},
 			beforeTest: func(mockSQL sqlmock.Sqlmock) {
@@ -56,7 +65,7 @@ func TestTodo_FindOne(t *testing.T) {
 					WillReturnError(sql.ErrNoRows).
 					WillReturnRows(sqlmock.NewRows([]string{"id"}))
 			},
-			expectedError: sql.ErrNoRows,
+			expectedError: nil,
 		},
 	}
 
@@ -67,17 +76,16 @@ func TestTodo_FindOne(t *testing.T) {
 
 			db := sqlx.NewDb(mockDB, "sqlmock")
 
-			ss := NewRepositoryTodo(db)
+			ss := NewRepositoryTodo(db, logger.GetLogger("bee-core-todo-repository"))
 
 			if test.beforeTest != nil {
 				test.beforeTest(mockSQL)
 			}
 
-			result, err := ss.FindOne(test.args.ctx, test.args.input)
+			_, err := ss.FindOne(test.args.ctx, test.args.input)
 			if !errors.Is(err, test.expectedError) {
 				t.Errorf("expected: %v but got: %v \n", test.expectedError, err)
 			}
-			fmt.Println("result", result)
 		})
 	}
 }

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/sukha-id/bee/cmd/http"
 	"os"
@@ -21,7 +20,6 @@ func Start() {
 	rootCmd.AddCommand(allCmd)
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }

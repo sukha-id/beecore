@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/sukha-id/bee/internal/app/configuration"
-	"github.com/sukha-id/bee/pkg/logx"
 	"time"
 )
 
-func InitSqlConnection(cfg *configuration.ConfigApp) *sqlx.DB {
+func InitSqlConnection(cfg *configuration.ConfigApp) (db *sqlx.DB, err error) {
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		cfg.Database.Username,
 		cfg.Database.Password,
@@ -16,21 +15,19 @@ func InitSqlConnection(cfg *configuration.ConfigApp) *sqlx.DB {
 		cfg.Database.Port,
 		cfg.Database.DatabaseName)
 
-	db, err := sqlx.Open("mysql", connectionString)
+	db, err = sqlx.Open("mysql", connectionString)
 	if err != nil {
-		logx.GetLogger().Fatal(err)
-		panic(err)
+		return
 	}
 
 	err = db.Ping()
 	if err != nil {
-		logx.GetLogger().Fatal(err)
-		panic(err)
+		return
 	}
 
 	db.SetMaxIdleConns(cfg.Database.MaxIdleConnection)
 	db.SetMaxOpenConns(cfg.Database.MaxOpenConnection)
 	db.SetConnMaxLifetime(time.Duration(cfg.Database.MaxLifetimeConnection) * time.Second)
 
-	return db
+	return
 }

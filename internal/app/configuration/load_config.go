@@ -6,9 +6,9 @@ import (
 )
 
 type ConfigApp struct {
-	App      App
-	Database Database
-	Log      logrusx.Config
+	App      App            `mapstructure:"app"`
+	Database Database       `mapstructure:"database"`
+	Log      logrusx.Config `mapstructure:"log"`
 }
 
 type App struct {
@@ -18,7 +18,7 @@ type App struct {
 }
 
 type Database struct {
-	HostName              string `mapstructure:"host"`
+	HostName              string `mapstructure:"hostname"`
 	Port                  string `mapstructure:"port"`
 	Username              string `mapstructure:"username"`
 	Password              string `mapstructure:"password"`
@@ -28,16 +28,16 @@ type Database struct {
 	MaxLifetimeConnection int    `mapstructure:"max_lifetime_connection"`
 }
 
-func LoadConfig() (config ConfigApp, err error) {
+func LoadConfig(pathFile string) (config ConfigApp, err error) {
 	viper.SetConfigType("yaml")
-	viper.SetConfigFile("config.yaml")
+	viper.SetConfigFile(pathFile)
 
 	if err = viper.ReadInConfig(); err != nil {
-		panic(err)
+		return
 	}
 
 	if err = viper.Unmarshal(&config); err != nil {
-		panic(err)
+		return
 	}
 
 	return

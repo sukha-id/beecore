@@ -1,9 +1,13 @@
 app:
   debug: true
-  port: 1000
+  port: 8080
+  timeout: 5
 database:
   hostname: localhost
   port: 3306
   username: root
-  password: root
-  database_name: jns
+  password: 111111
+  database_name: jns_broadcast
+  max_idle_connection: 10
+  max_open_connection: 100
+  max_lifetime_connection: 600
