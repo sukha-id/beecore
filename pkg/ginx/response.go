@@ -13,25 +13,25 @@ type generalResponse struct {
 }
 
 func RespondWithError(ctx *gin.Context, status int, message string, error interface{}) {
+	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(status, generalResponse{
 		RequestID: ctx.Value("request_id").(string),
 		Message:   message,
 		Status:    status,
 		Error:     error,
 	})
-	ctx.Header("Content-Type", "application/json")
 	ctx.Abort()
 	return
 }
 
 func RespondWithJSON(ctx *gin.Context, status int, message string, data interface{}) {
+	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(status, generalResponse{
 		RequestID: ctx.Value("request_id").(string),
 		Message:   message,
 		Status:    status,
 		Data:      data,
 	})
-	ctx.Header("Content-Type", "application/json")
 	ctx.Abort()
 	return
 }
