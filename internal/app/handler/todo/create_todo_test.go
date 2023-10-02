@@ -17,7 +17,7 @@ import (
 )
 
 func TestCreateTodo(t *testing.T) {
-	mockParam := domain.Todo{
+	mockParam := domain.Task{
 		Task: "OKE",
 	}
 

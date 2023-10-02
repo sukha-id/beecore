@@ -1,8 +1,8 @@
-package domain
+package todo
 
 import "time"
 
-type Todo struct {
+type Task struct {
 	ID        int       `json:"ID,omitempty" db:"id"`
 	Task      string    `json:"task,omitempty" db:"task"`
 	CreatedAt string    `json:"createdAt,omitempty" db:"create_at"`

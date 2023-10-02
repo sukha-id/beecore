@@ -11,7 +11,7 @@ type todoUseCase struct {
 	logger   *logrusx.LoggerEntry
 }
 
-func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Todo) (result domain.Todo, err error) {
+func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Task) (result domain.Task, err error) {
 	var (
 		guid = ctx.Value("request_id").(string)
 	)
@@ -26,7 +26,7 @@ func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Todo) (result do
 		return
 	}
 
-	return domain.Todo{}, nil
+	return domain.Task{}, nil
 }
 
 func NewTodoUseCase(logger *logrusx.LoggerEntry, repoTodo domain.TodoRepository) domain.TodoUseCase {

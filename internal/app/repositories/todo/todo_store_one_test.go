@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
-	"github.com/sukha-id/bee/internal/app/configuration"
+	"github.com/sukha-id/bee/config"
 	domainTodo "github.com/sukha-id/bee/internal/domain/todo"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"testing"
@@ -16,10 +16,10 @@ import (
 func TestTodo_StoreOne(t *testing.T) {
 	type args struct {
 		ctx   context.Context
-		input domainTodo.Todo
+		input domainTodo.Task
 	}
 
-	cfg, err := configuration.LoadConfig("../../../../config.yaml")
+	cfg, err := config.LoadConfig("../../../../config.yaml")
 	require.NoError(t, err)
 	ctx := context.Background()
 	ctxWithValue := context.WithValue(ctx, "request_id", uuid.New().String())
@@ -35,7 +35,7 @@ func TestTodo_StoreOne(t *testing.T) {
 			name: "test",
 			args: args{
 				ctx: ctxWithValue,
-				input: domainTodo.Todo{
+				input: domainTodo.Task{
 					Task: "task",
 				},
 			},

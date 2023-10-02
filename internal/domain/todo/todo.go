@@ -1,4 +1,4 @@
-package domain
+package todo
 
 import (
 	"context"
@@ -11,5 +11,5 @@ var (
 )
 
 type TodoUseCase interface {
-	StoreOne(ctx context.Context, todo Todo) (result Todo, err error)
+	StoreOne(ctx context.Context, todo Task) (result Task, err error)
 }

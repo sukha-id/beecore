@@ -3,11 +3,11 @@ package connector
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"github.com/sukha-id/bee/internal/app/configuration"
+	"github.com/sukha-id/bee/config"
 	"time"
 )
 
-func InitSqlConnection(cfg *configuration.ConfigApp) (db *sqlx.DB, err error) {
+func InitSqlConnection(cfg *config.ConfigApp) (db *sqlx.DB, err error) {
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		cfg.Database.Username,
 		cfg.Database.Password,

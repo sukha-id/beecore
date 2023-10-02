@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (t *todo) StoreOne(ctx context.Context, todo domain.Todo) (id string, err error) {
+func (t *todo) StoreOne(ctx context.Context, todo domain.Task) (id string, err error) {
 	var (
 		guid = ctx.Value("request_id").(string)
 	)

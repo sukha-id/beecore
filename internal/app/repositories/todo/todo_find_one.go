@@ -7,9 +7,9 @@ import (
 	domainTodo "github.com/sukha-id/bee/internal/domain/todo"
 )
 
-func (t *todo) FindOne(ctx context.Context, code string) (todo *domainTodo.Todo, err error) {
+func (t *todo) FindOne(ctx context.Context, code string) (todo *domainTodo.Task, err error) {
 	var (
-		result domainTodo.Todo
+		result domainTodo.Task
 		guid   = ctx.Value("request_id").(string)
 	)
 

@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
-	"github.com/sukha-id/bee/internal/app/configuration"
+	"github.com/sukha-id/bee/config"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"testing"
 )
@@ -19,7 +19,7 @@ func TestTodo_FindOne(t *testing.T) {
 		input string
 	}
 
-	cfg, err := configuration.LoadConfig("../../../../config.yaml")
+	cfg, err := config.LoadConfig("../../../../config.yaml")
 	require.NoError(t, err)
 	ctx := context.Background()
 	ctxWithValue := context.WithValue(ctx, "request_id", uuid.New().String())

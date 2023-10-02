@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) HandlerCreateTodo(ctx *gin.Context) {
-	var param domain.Todo
+	var param domain.Task
 	// sample validate with extractor
 	//decoder := json.NewDecoder(ctx.Request.Body)
 	//if err := decoder.Decode(&param); err != nil {

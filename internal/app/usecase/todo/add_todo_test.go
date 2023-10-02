@@ -13,7 +13,7 @@ import (
 func TestAddTodo(t *testing.T) {
 	mockRepoTodo := new(mocks.TodoRepository)
 
-	mockParam := domain.Todo{
+	mockParam := domain.Task{
 		Task: "Task Baru",
 	}
 
@@ -47,7 +47,7 @@ func TestAddTodo(t *testing.T) {
 
 		u := NewTodoUseCase(logger.GetLogger("bee-core-use-case-todo"), mockRepoTodo)
 
-		_, err := u.StoreOne(ctxWithValue, domain.Todo{Task: ""})
+		_, err := u.StoreOne(ctxWithValue, domain.Task{Task: ""})
 
 		assert.EqualError(t, err, domain.ErrorTodoInvalidTask.Error())
 	})
