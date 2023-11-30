@@ -6,12 +6,12 @@ import (
 	"github.com/sukha-id/bee/pkg/logrusx"
 )
 
-type todoUseCase struct {
+type TodoUseCase struct {
 	repoTodo domain.TodoRepository
 	logger   *logrusx.LoggerEntry
 }
 
-func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Task) (result domain.Task, err error) {
+func (t *TodoUseCase) StoreOne(ctx context.Context, todo domain.Task) (result domain.Task, err error) {
 	var (
 		guid = ctx.Value("request_id").(string)
 	)
@@ -30,7 +30,7 @@ func (t *todoUseCase) StoreOne(ctx context.Context, todo domain.Task) (result do
 }
 
 func NewTodoUseCase(logger *logrusx.LoggerEntry, repoTodo domain.TodoRepository) domain.TodoUseCase {
-	return &todoUseCase{
+	return &TodoUseCase{
 		repoTodo: repoTodo,
 		logger:   logger,
 	}

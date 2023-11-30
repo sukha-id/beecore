@@ -1,0 +1,36 @@
+package database
+
+import (
+	"context"
+	"fmt"
+	"github.com/sukha-id/bee/config"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+)
+
+func InitMongoConnection(cfg *config.ConfigApp) (db *mongo.Client) {
+	connectionString := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s",
+		cfg.MongoDB.Username,
+		cfg.MongoDB.Password,
+		cfg.MongoDB.HostName,
+		cfg.MongoDB.Port,
+		cfg.MongoDB.DatabaseName)
+
+	mongoClient, err := mongo.Connect(
+		context.TODO(),
+		options.Client().ApplyURI(connectionString),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = mongoClient.Ping(context.TODO(), readpref.Primary())
+	if err != nil {
+		panic(err)
+	}
+
+	return mongoClient
+
+}

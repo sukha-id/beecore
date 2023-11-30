@@ -4,11 +4,16 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/sukha-id/bee/config"
-	"github.com/sukha-id/bee/internal/app/connector"
+	"github.com/sukha-id/bee/database"
+	"github.com/sukha-id/bee/internal/app/handler/handler_auth"
+	"github.com/sukha-id/bee/internal/app/handler/handler_ping"
 	handler "github.com/sukha-id/bee/internal/app/handler/todo"
 	"github.com/sukha-id/bee/internal/app/middleware"
+	"github.com/sukha-id/bee/internal/app/middleware/jwtx"
+	"github.com/sukha-id/bee/internal/app/repositories/repo_auth"
 	repositories "github.com/sukha-id/bee/internal/app/repositories/todo"
-	usecase "github.com/sukha-id/bee/internal/app/usecase/todo"
+	"github.com/sukha-id/bee/internal/app/service/service_auth"
+	usecase "github.com/sukha-id/bee/internal/app/service/todo"
 	"github.com/sukha-id/bee/pkg/logrusx"
 	"github.com/sukha-id/bee/pkg/logx"
 	"net/http"
@@ -29,17 +34,22 @@ func Run() {
 	ctxLog := context.Background()
 	logger := logrusx.NewProvider(&ctxLog, cfg.Log)
 
-	db, err := connector.InitSqlConnection(&cfg)
-	if err != nil {
-		panic(err)
-	}
+	mysqlDB := database.InitSqlConnection(cfg)
+	mongoDB := database.InitMongoConnection(cfg)
 
 	router := gin.Default()
 	router.Use(middleware.TimeoutMiddleware(time.Duration(cfg.App.Timeout) * time.Second))
 
-	repoTodo := repositories.NewRepositoryTodo(db, logger.GetLogger("bee-core"))
+	handler_ping.NewHandlerPing(router, logger.GetLogger("monitoring"))
+
+	repoTodo := repositories.NewRepositoryTodo(mysqlDB, logger.GetLogger("bee-core"))
 	useCaseTodo := usecase.NewTodoUseCase(logger.GetLogger("bee-core"), repoTodo)
 	handler.NewHandlerTodo(router, logger.GetLogger("bee-core"), useCaseTodo)
+
+	repoAuth := repo_auth.NewAuthRepository(mongoDB, logger.GetLogger("repo-auth"))
+	jwtAuthentication := jwtx.NewJWTAuthentication(cfg, repoAuth, logger.GetLogger("jwt-authorization"))
+	serviceAuth := service_auth.NewAuthService(logger.GetLogger("service-auth"), repoAuth, jwtAuthentication)
+	handler_auth.NewHandlerAuth(cfg, router, jwtAuthentication, serviceAuth, logger.GetLogger("handler-auth"))
 
 	// Create a server with desired configurations
 	server := &http.Server{

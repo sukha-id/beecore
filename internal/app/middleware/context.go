@@ -4,8 +4,6 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/sukha-id/bee/pkg/ginx"
-	"net/http"
 	"time"
 )
 
@@ -17,27 +15,6 @@ func TimeoutMiddleware(timeout time.Duration) gin.HandlerFunc {
 		c.Request = c.Request.WithContext(ctx)
 		c.Set("request_id", uuid.New().String())
 
-		done := make(chan struct{})
-		go func() {
-			defer close(done)
-			c.Next()
-		}()
-
-		// Wait for the handler to complete or the timeout to occur
-		select {
-		case <-done:
-			// Handler completed within the timeout
-			return
-		case <-ctx.Done():
-			// Handler was canceled or timed out
-			if ctx.Err() == context.DeadlineExceeded {
-				ginx.RespondWithJSON(c, http.StatusRequestTimeout, "request timeout", nil)
-				return
-			}
-			if ctx.Err() == context.Canceled {
-				ginx.RespondWithJSON(c, http.StatusServiceUnavailable, "service unavailable", nil)
-				return
-			}
-		}
+		c.Next()
 	}
 }

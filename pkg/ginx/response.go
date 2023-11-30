@@ -15,9 +15,9 @@ type generalResponse struct {
 func RespondWithError(ctx *gin.Context, status int, message string, error interface{}) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(status, generalResponse{
-		RequestID: ctx.Value("request_id").(string),
-		Message:   message,
 		Status:    status,
+		Message:   message,
+		RequestID: ctx.Value("request_id").(string),
 		Error:     error,
 	})
 	ctx.Abort()
@@ -27,9 +27,9 @@ func RespondWithError(ctx *gin.Context, status int, message string, error interf
 func RespondWithJSON(ctx *gin.Context, status int, message string, data interface{}) {
 	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(status, generalResponse{
-		RequestID: ctx.Value("request_id").(string),
-		Message:   message,
 		Status:    status,
+		Message:   message,
+		RequestID: ctx.Value("request_id").(string),
 		Data:      data,
 	})
 	ctx.Abort()

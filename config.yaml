@@ -2,12 +2,22 @@ app:
   debug: true
   port: 8080
   timeout: 5
-database:
+  secret_key: sdfadsfdsafdasfdasfdsaf
+mysql_db:
   hostname: localhost
   port: 3306
   username: root
   password: 111111
   database_name: jns_broadcast
+  max_idle_connection: 10
+  max_open_connection: 100
+  max_lifetime_connection: 600
+mongo_db:
+  hostname: localhost
+  port: 27017
+  username: root
+  password: 111111
+  database_name: stock_collector
   max_idle_connection: 10
   max_open_connection: 100
   max_lifetime_connection: 600
