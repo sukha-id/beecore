@@ -2,8 +2,8 @@
 .vscode
 log/
 vendor/
-.env
 bin/
+.env
 .DS_Store
 .env.yaml
 config.yaml
