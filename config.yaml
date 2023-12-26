@@ -2,9 +2,9 @@ app:
   debug: true
   port: 8080
   timeout: 5
-  secret_key: sdfadsfdsafdasfdasfdsaf
+  secret_key: 9pQxSio2vIB59qNHCqWetYh6N0Ap5URD
 mysql_db:
-  hostname: localhost
+  hostname: host.docker.internal
   port: 3306
   username: root
   password: 111111
@@ -13,7 +13,7 @@ mysql_db:
   max_open_connection: 100
   max_lifetime_connection: 600
 mongo_db:
-  hostname: localhost
+  hostname: host.docker.internal
   port: 27017
   username: root
   password: 111111
