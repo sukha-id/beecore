@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func InitMongoConnection(cfg *config.ConfigApp) (db *mongo.Client) {
+func InitMongoConnection(cfg *config.ConfigApp) (db *mongo.Client, err error) {
 	connectionString := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s",
 		cfg.MongoDB.Username,
 		cfg.MongoDB.Password,
@@ -23,14 +23,14 @@ func InitMongoConnection(cfg *config.ConfigApp) (db *mongo.Client) {
 	)
 
 	if err != nil {
-		panic(err)
+		return
 	}
 
 	err = mongoClient.Ping(context.TODO(), readpref.Primary())
 	if err != nil {
-		panic(err)
+		return
 	}
 
-	return mongoClient
+	return mongoClient, nil
 
 }

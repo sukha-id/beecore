@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/sukha-id/bee/internal/app_rest/repositories/repo_auth"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -14,30 +15,35 @@ func (a *authService) RefreshToken(ctx context.Context, rToken string) (*Refresh
 		result RefreshTokenResponse
 	)
 
+	cLogger := zap.L().With(
+		zap.String("layer", "service.logout"),
+		zap.String("request_id", guid),
+	)
+
 	token, err := a.jwtAuth.ParseRefreshToken(rToken)
 	if err != nil {
-		a.logger.Error(guid, "err parse jwt refresh token", err)
+		cLogger.Error("err parse jwt refresh token", zap.Error(err))
 		err = errors.New("unauthorized")
 		return nil, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims) //the token claims should conform to MapClaims
 	if !ok && !token.Valid {
-		a.logger.Error(guid, "err claim refresh token", err)
+		cLogger.Error("err claim refresh token", zap.Error(err))
 		err = errors.New("unauthorized")
 		return nil, err
 	}
 
 	userID, ok := claims["UserID"].(string) //convert the interface to string
 	if !ok {
-		a.logger.Error(guid, "err get claims user id", err)
+		cLogger.Error("err get claims user id", zap.Error(err))
 		err = errors.New("unauthorized")
 		return nil, err
 	}
 
 	auth, err := a.repoAuth.FindOne(ctx, repo_auth.Auth{UserID: userID})
 	if err != nil {
-		a.logger.Error(guid, "error find auth by user id", err)
+		cLogger.Error("error find auth by user id", zap.Error(err))
 		return nil, err
 	}
 
@@ -62,13 +68,13 @@ func (a *authService) RefreshToken(ctx context.Context, rToken string) (*Refresh
 
 	err = a.repoAuth.StoreAccessToken(ctx, accessToken)
 	if err != nil {
-		a.logger.Error(guid, "err", err)
-
+		cLogger.Error("error store access token", zap.Error(err))
 		return nil, err
 	}
 
 	result.Token = newToken
 	result.RefreshToken = newRefreshToken
 
+	cLogger.Info("success service refresh token", zap.Error(err))
 	return &result, nil
 }

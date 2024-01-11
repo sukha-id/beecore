@@ -3,6 +3,7 @@ package handler_auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sukha-id/bee/pkg/ginx"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -12,13 +13,19 @@ func (h *Handler) HandlerLogout(ctx *gin.Context) {
 		token = ctx.GetString("token")
 	)
 
+	cLogger := zap.L().With(
+		zap.String("layer", "handler.logout"),
+		zap.String("request_id", guid),
+	)
+
 	err := h.authService.Logout(ctx, token)
 	if err != nil {
-		h.logger.Error(guid, "err", err)
+		cLogger.Error("error logout", zap.Error(err))
 		ginx.RespondWithJSON(ctx, http.StatusInternalServerError, "err", err.Error())
 		return
 	}
 
+	cLogger.Info("success logout", zap.Error(err))
 	ginx.RespondWithJSON(ctx, http.StatusOK, "success", nil)
 	return
 }

@@ -3,6 +3,7 @@ package handler_auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sukha-id/bee/pkg/ginx"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -10,6 +11,11 @@ func (h *Handler) HandlerRefreshToken(ctx *gin.Context) {
 	var (
 		guid         = ctx.Value("request_id").(string)
 		refreshToken = ctx.Request.Header.Get("Refresh-Token")
+	)
+
+	cLogger := zap.L().With(
+		zap.String("layer", "handler.refresh_token"),
+		zap.String("request_id", guid),
 	)
 
 	if refreshToken == "" {
@@ -21,8 +27,8 @@ func (h *Handler) HandlerRefreshToken(ctx *gin.Context) {
 	if err != nil {
 		switch err.Error() {
 		case "unauthorized":
-			h.logger.Error(guid, "username or password is incorrect", err)
-			ginx.RespondWithJSON(
+			cLogger.Error("error unauthorized", zap.Error(err))
+			ginx.RespondWithError(
 				ctx,
 				http.StatusUnauthorized,
 				http.StatusText(http.StatusUnauthorized),
@@ -30,8 +36,8 @@ func (h *Handler) HandlerRefreshToken(ctx *gin.Context) {
 			)
 			return
 		default:
-			h.logger.Error(guid, "err", err)
-			ginx.RespondWithJSON(
+			cLogger.Error("err ", zap.Error(err))
+			ginx.RespondWithError(
 				ctx,
 				http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
@@ -41,5 +47,6 @@ func (h *Handler) HandlerRefreshToken(ctx *gin.Context) {
 		}
 	}
 
+	cLogger.Info("success handler refresh token")
 	ginx.RespondWithJSON(ctx, http.StatusOK, "success", result)
 }

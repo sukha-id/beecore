@@ -5,13 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sukha-id/bee/config"
 	"github.com/sukha-id/bee/internal/app_rest/repositories/repo_auth"
-	"github.com/sukha-id/bee/pkg/logrusx"
 )
 
 type AuthenticationJWT struct {
 	cfg      *config.ConfigApp
 	repoAuth repo_auth.AuthRepositoryInterface
-	logger   *logrusx.LoggerEntry
 }
 type AuthenticationInterface interface {
 	Authentication() gin.HandlerFunc
@@ -22,11 +20,9 @@ type AuthenticationInterface interface {
 
 func NewJWTAuthentication(
 	cfg *config.ConfigApp,
-	repoAuth repo_auth.AuthRepositoryInterface,
-	logger *logrusx.LoggerEntry) AuthenticationInterface {
+	repoAuth repo_auth.AuthRepositoryInterface) AuthenticationInterface {
 	return &AuthenticationJWT{
 		cfg:      cfg,
 		repoAuth: repoAuth,
-		logger:   logger,
 	}
 }

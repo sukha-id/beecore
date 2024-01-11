@@ -2,14 +2,13 @@ package config
 
 import (
 	"github.com/spf13/viper"
-	"github.com/sukha-id/bee/pkg/logrusx"
 )
 
 type ConfigApp struct {
-	App     App            `mapstructure:"app"`
-	MysqlDB Database       `mapstructure:"mysql_db"`
-	MongoDB Database       `mapstructure:"mongo_db"`
-	Log     logrusx.Config `mapstructure:"log"`
+	App     App       `mapstructure:"app"`
+	MysqlDB Database  `mapstructure:"mysql_db"`
+	MongoDB Database  `mapstructure:"mongo_db"`
+	Log     LogConfig `mapstructure:"log"`
 }
 
 type App struct {
@@ -28,6 +27,14 @@ type Database struct {
 	MaxIdleConnection     int    `mapstructure:"max_idle_connection"`
 	MaxOpenConnection     int    `mapstructure:"max_open_connection"`
 	MaxLifetimeConnection int    `mapstructure:"max_lifetime_connection"`
+}
+
+type LogConfig struct {
+	Dir       string `mapstructure:"dir"`
+	FileName  string `mapstructure:"file_name"`
+	MaxSize   int    `mapstructure:"max_size"`
+	LocalTime bool   `mapstructure:"local_time"`
+	Compress  bool   `mapstructure:"compress"`
 }
 
 func LoadConfig(pathFile string) (*ConfigApp, error) {

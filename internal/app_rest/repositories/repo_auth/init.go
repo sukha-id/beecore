@@ -2,7 +2,6 @@ package repo_auth
 
 import (
 	"context"
-	"github.com/sukha-id/bee/pkg/logrusx"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -17,13 +16,11 @@ type AuthRepositoryInterface interface {
 type authRepository struct {
 	mongoDB           *mongo.Client
 	MongoDBCollection *mongo.Collection
-	logger            *logrusx.LoggerEntry
 }
 
-func NewAuthRepository(mongoDB *mongo.Client, logger *logrusx.LoggerEntry) AuthRepositoryInterface {
+func NewAuthRepository(mongoDB *mongo.Client) AuthRepositoryInterface {
 	return &authRepository{
 		mongoDB:           mongoDB,
 		MongoDBCollection: mongoDB.Database("stock_collector").Collection("auth"),
-		logger:            logger,
 	}
 }

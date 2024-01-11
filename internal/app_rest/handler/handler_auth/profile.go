@@ -3,6 +3,7 @@ package handler_auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sukha-id/bee/pkg/ginx"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -13,13 +14,19 @@ func (h *Handler) HandlerProfile(ctx *gin.Context) {
 		username = ctx.GetString("username")
 	)
 
+	cLogger := zap.L().With(
+		zap.String("layer", "handler.logout"),
+		zap.String("request_id", guid),
+	)
+
 	result, err := h.authService.Profile(ctx, userID, username)
 	if err != nil {
-		h.logger.Error(guid, "err", err)
+		cLogger.Error("error get profile", zap.Error(err))
 		ginx.RespondWithJSON(ctx, http.StatusInternalServerError, "err", err.Error())
 		return
 	}
 
+	cLogger.Info("success get profile")
 	ginx.RespondWithJSON(ctx, http.StatusOK, "success", result)
 	return
 }

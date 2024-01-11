@@ -6,7 +6,7 @@ import (
 	"github.com/sukha-id/bee/internal/app_rest/middleware/jwtx"
 	"github.com/sukha-id/bee/internal/app_rest/service/service_auth"
 	"github.com/sukha-id/bee/pkg/ginx"
-	"github.com/sukha-id/bee/pkg/logrusx"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -14,12 +14,9 @@ type Handler struct {
 	cfg         *config.ConfigApp
 	authService service_auth.AuthServiceInterface
 	jwtAuth     jwtx.AuthenticationInterface
-	logger      *logrusx.LoggerEntry
 }
 
-func NewHandlerPing(
-	router *gin.Engine,
-	logger *logrusx.LoggerEntry) {
+func NewHandlerPing(router *gin.Engine) {
 
 	v1 := router.Group("/api/v1/")
 	{
@@ -27,7 +24,7 @@ func NewHandlerPing(
 			var (
 				guid = ctx.Value("request_id").(string)
 			)
-			logger.Info(guid, "ping")
+			zap.L().Info("ping", zap.String("request_id", guid))
 			ginx.RespondWithJSON(ctx, http.StatusOK, "pong", nil)
 		})
 	}

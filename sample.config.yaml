@@ -23,7 +23,7 @@ mongo_db:
   max_lifetime_connection: 600
 log:
   dir: log # Don't Edit This
-  file_name: tool_dashboard
+  file_name: bee_core
   max_size: 4 # MB with min 1 MB
   local_time: true
   compress: true

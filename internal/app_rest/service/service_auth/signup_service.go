@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"github.com/sukha-id/bee/internal/app_rest/repositories/repo_auth"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
@@ -15,9 +16,14 @@ func (a *authService) SignUp(ctx context.Context, l SignUpPayload) (*SignUpRespo
 		result SignUpResponse
 	)
 
+	cLogger := zap.L().With(
+		zap.String("layer", "service.logout"),
+		zap.String("request_id", guid),
+	)
+
 	existingAuth, err := a.repoAuth.FindOne(ctx, repo_auth.Auth{Username: l.Username})
 	if err != nil {
-		a.logger.Error(guid, "err", err)
+		cLogger.Error("err find one auth", zap.Error(err))
 		return nil, err
 	}
 
@@ -27,7 +33,7 @@ func (a *authService) SignUp(ctx context.Context, l SignUpPayload) (*SignUpRespo
 
 	password, err := HashPassword(l.Password)
 	if err != nil {
-		a.logger.Error(guid, "err", err)
+		cLogger.Error("err hash password", zap.Error(err))
 		return nil, errors.New("err your password")
 	}
 
@@ -55,21 +61,20 @@ func (a *authService) SignUp(ctx context.Context, l SignUpPayload) (*SignUpRespo
 
 	err = a.repoAuth.StoreAuth(ctx, auth)
 	if err != nil {
-		a.logger.Error(guid, "err", err)
-
+		cLogger.Error("err store auth", zap.Error(err))
 		return nil, err
 	}
 
 	err = a.repoAuth.StoreAccessToken(ctx, accessToken)
 	if err != nil {
-		a.logger.Error(guid, "err", err)
-
+		cLogger.Error("err store auth", zap.Error(err))
 		return nil, err
 	}
 
 	result.Token = accessToken.Token
 	result.RefreshToken = accessToken.RefreshToken
 
+	cLogger.Error("success service signup")
 	return &result, err
 }
 

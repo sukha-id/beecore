@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/sukha-id/bee/internal/app_rest/middleware/jwtx"
 	"github.com/sukha-id/bee/internal/app_rest/repositories/repo_auth"
-	"github.com/sukha-id/bee/pkg/logrusx"
 )
 
 type AuthServiceInterface interface {
@@ -18,13 +17,11 @@ type AuthServiceInterface interface {
 type authService struct {
 	repoAuth repo_auth.AuthRepositoryInterface
 	jwtAuth  jwtx.AuthenticationInterface
-	logger   *logrusx.LoggerEntry
 }
 
-func NewAuthService(logger *logrusx.LoggerEntry, repoAuth repo_auth.AuthRepositoryInterface, jwtAuth jwtx.AuthenticationInterface) AuthServiceInterface {
+func NewAuthService(repoAuth repo_auth.AuthRepositoryInterface, jwtAuth jwtx.AuthenticationInterface) AuthServiceInterface {
 	return &authService{
 		repoAuth: repoAuth,
 		jwtAuth:  jwtAuth,
-		logger:   logger,
 	}
 }

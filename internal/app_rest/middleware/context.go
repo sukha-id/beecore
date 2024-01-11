@@ -13,7 +13,9 @@ func RequestIDMiddleware(timeout time.Duration) gin.HandlerFunc {
 		defer cancel()
 
 		c.Request = c.Request.WithContext(ctx)
-		c.Set("request_id", uuid.New().String())
+		requestID := uuid.New().String()
+		c.Set("request_id", requestID)
+		c.Header("Request-ID", requestID)
 
 		c.Next()
 	}
