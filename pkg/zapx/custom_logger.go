@@ -25,6 +25,7 @@ func CreateLogger() *zap.Logger {
 		MaxBackups: 3,
 		MaxAge:     1, // 1 day
 		Compress:   true,
+		LocalTime:  true,
 	})
 
 	fileInfo := zapcore.AddSync(&lumberjack.Logger{
@@ -33,6 +34,7 @@ func CreateLogger() *zap.Logger {
 		MaxBackups: 3,
 		MaxAge:     1, // 1 day
 		Compress:   true,
+		LocalTime:  true,
 	})
 
 	fileDebug := zapcore.AddSync(&lumberjack.Logger{
@@ -41,6 +43,7 @@ func CreateLogger() *zap.Logger {
 		MaxBackups: 3,
 		MaxAge:     1, // 1 day
 		Compress:   true,
+		LocalTime:  true,
 	})
 
 	productionCfg := zap.NewProductionEncoderConfig()

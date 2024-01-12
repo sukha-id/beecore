@@ -6,8 +6,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${PORT}:8080"
+    user: "${UID}:${GID}"
     volumes:
-      - "${LOG_DIR}:/log"
+      - "${LOG_DIR}:/app/log"
       - "./config.yaml:/app/config.yaml"
     environment:
       - "TZ=${TIMEZONE}"
