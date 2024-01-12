@@ -6,9 +6,9 @@ COPY ./ .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o app
 
-FROM alpine:latest AS runtime
+FROM alpine:3.19 AS runtime
 
-RUN apk add tzdata
+RUN apk add --no-cache tzdata
 ENV APP_COMMAND http
 
 WORKDIR /app

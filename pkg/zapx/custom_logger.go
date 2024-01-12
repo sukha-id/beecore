@@ -7,17 +7,41 @@ import (
 )
 
 func CreateLogger() *zap.Logger {
-	//stdout := zapcore.AddSync(os.Stdout)
+	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel
+	})
 
-	file := zapcore.AddSync(&lumberjack.Logger{
-		Filename:   "log/app.log",
+	middlePriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl <= zapcore.WarnLevel && lvl >= zap.InfoLevel
+	})
+
+	lowPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl == zap.DebugLevel
+	})
+
+	fileError := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   "log/error.log",
 		MaxSize:    1, // 10 megabytes
 		MaxBackups: 3,
 		MaxAge:     1, // 1 day
 		Compress:   true,
 	})
 
-	level := zap.NewAtomicLevelAt(zap.InfoLevel)
+	fileInfo := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   "log/info.log",
+		MaxSize:    1, // 10 megabytes
+		MaxBackups: 3,
+		MaxAge:     1, // 1 day
+		Compress:   true,
+	})
+
+	fileDebug := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   "log/debug.log",
+		MaxSize:    1, // 10 megabytes
+		MaxBackups: 3,
+		MaxAge:     1, // 1 day
+		Compress:   true,
+	})
 
 	productionCfg := zap.NewProductionEncoderConfig()
 	productionCfg.TimeKey = "timestamp"
@@ -27,12 +51,12 @@ func CreateLogger() *zap.Logger {
 	developmentCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	developmentCfg.CallerKey = "caller"
 
-	//consoleEncoder := zapcore.NewConsoleEncoder(developmentCfg)
 	fileEncoder := zapcore.NewJSONEncoder(productionCfg)
 
 	core := zapcore.NewTee(
-		//zapcore.NewCore(consoleEncoder, stdout, level),
-		zapcore.NewCore(fileEncoder, file, level),
+		zapcore.NewCore(fileEncoder, fileError, highPriority),
+		zapcore.NewCore(fileEncoder, fileInfo, middlePriority),
+		zapcore.NewCore(fileEncoder, fileDebug, lowPriority),
 	)
 
 	return zap.New(core, zap.AddCaller())
